@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeCoding Progress Dashboard</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Cards and Layout */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .subtext {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: #e2e8f0;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            border-radius: 0.25rem;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .progress-fill {
+                transition: none;
+            }
+        }
+
+        /* Forms and Inputs */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: border-color 0.15s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 4rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e2e8f0;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .checklist-item.completed .task-text {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+
+        .task-text {
+            flex: 1;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            background: transparent;
+        }
+
+        .task-text:focus {
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        /* Level Badge */
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Charts */
+        .chart-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background: white;
+        }
+
+        /* History */
+        .history-item {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .history-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .history-item.expanded {
+            background-color: #f1f5f9;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .history-details {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .history-item.expanded .history-details {
+            display: block;
+        }
+
+        /* Milestones */
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-item.completed {
+            opacity: 0.6;
+        }
+
+        .milestone-item.completed .milestone-title {
+            text-decoration: line-through;
+        }
+
+        /* Practice Log */
+        .practice-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .practice-category {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            background: #e2e8f0;
+            border-radius: 1rem;
+            color: #475569;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #dc2626;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>VibeCoding Progress Dashboard</h1>
+            <div class="subtext">30-Day Course • Offline First</div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="dayCounter">Day 1 / 30</div>
+                <div class="stat-label">Progress</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="streakCounter">🔥 0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Completion</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="completionProgress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Today Panel -->
+            <div class="card">
+                <h2>Today's Plan</h2>
+                <ul class="checklist" id="todaysPlan">
+                    <!-- Dynamic content -->
+                </ul>
+                <button class="btn btn-secondary btn-small mt-4" onclick="addTask()">+ Add Task</button>
+                
+                <div class="form-group mt-4">
+                    <label for="todaysMinutes">Today's Time (minutes)</label>
+                    <input type="number" id="todaysMinutes" min="0" max="1440" placeholder="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="todaysDifficulty">Difficulty (1-5)</label>
+                    <select id="todaysDifficulty">
+                        <option value="1">1 - Very Easy</option>
+                        <option value="2">2 - Easy</option>
+                        <option value="3" selected>3 - Medium</option>
+                        <option value="4">4 - Hard</option>
+                        <option value="5">5 - Very Hard</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="todaysReflection">Today's Reflection (max 200 chars)</label>
+                    <textarea id="todaysReflection" maxlength="200" placeholder="What did you learn today?"></textarea>
+                </div>
+                
+                <button class="btn btn-primary mt-4" onclick="saveToday()">Save Today's Progress</button>
+                <button class="btn btn-primary mt-4" onclick="completeDay()">Complete Day</button>
+            </div>
+
+            <!-- Practice & Milestones -->
+            <div class="card">
+                <h2>Practice & Milestones</h2>
+                
+                <h3>Practice Log</h3>
+                <div class="form-group">
+                    <input type="text" id="practiceTitle" placeholder="What did you practice?">
+                </div>
+                <div class="form-group">
+                    <select id="practiceCategory">
+                        <option value="UI">UI</option>
+                        <option value="Logic">Logic</option>
+                        <option value="Prompt">Prompt</option>
+                        <option value="API">API</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary btn-small mb-2" onclick="addPractice()">+ Add Practice</button>
+                
+                <div id="practiceList">
+                    <!-- Dynamic content -->
+                </div>
+                
+                <h3 class="mt-4">Milestones</h3>
+                <div id="milestonesList">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill Level -->
+        <div class="card">
+            <h2>Skill Level</h2>
+            <div class="flex items-center justify-between">
+                <div class="level-badge" id="levelBadge">
+                    🎯 Beginner
+                </div>
+                <div id="levelPoints">0 points</div>
+            </div>
+            <div class="progress-bar mt-4">
+                <div class="progress-fill" id="levelProgress"></div>
+            </div>
+            <div class="subtext mt-2" id="levelProgressText">0 / 20 points to next level</div>
+        </div>
+
+        <!-- Charts -->
+        <div class="card">
+            <h2>Progress Charts</h2>
+            <div class="chart-container">
+                <h3>Minutes (Last 7 Days)</h3>
+                <canvas id="minutesChart" class="chart-canvas" width="300" height="100"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Tasks Completed (Last 7 Days)</h3>
+                <canvas id="tasksChart" class="chart-canvas" width="300" height="100"></canvas>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+            <h2>History</h2>
+            <button class="btn btn-secondary btn-small mb-2" onclick="toggleHistory()">
+                <span id="historyToggleText">Show History (last 7 entries)</span>
+            </button>
+            <div id="historyList" class="hidden">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+
+        <!-- Import/Export -->
+        <div class="card">
+            <h2>Data Management</h2>
+            <div class="flex gap-2">
+                <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import Data</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Powered by VibeCoding • Offline first
+        </div>
+    </div>
+
+    <script>
+        // State
+        let appData = {
+            meta: {
+                startedOn: '',
+                currentDay: 1,
+                streak: 0,
+                lastCompletedDate: ''
+            },
+            days: [],
+            milestones: []
+        };
+
+        let historyVisible = false;
+
+        // Storage
+        const STORAGE_KEY = 'vibecoding.v0';
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            } catch (error) {
+                showToast('Failed to save data. Changes will be lost on reload.');
+            }
+        }
+
+        function loadData() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    appData = JSON.parse(stored);
+                } else {
+                    initializeSeedData();
+                }
+            } catch (error) {
+                showToast('Failed to load data. Using default data.');
+                initializeSeedData();
+            }
+        }
+
+        function initializeSeedData() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const twoDaysAgo = new Date(today);
+            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+            appData = {
+                meta: {
+                    startedOn: formatDate(twoDaysAgo),
+                    currentDay: 3,
+                    streak: 2,
+                    lastCompletedDate: formatDate(yesterday)
+                },
+                days: [
+                    {
+                        date: formatDate(twoDaysAgo),
+                        day: 1,
+                        plan: [
+                            { id: generateId(), text: 'Set up development environment', done: true },
+                            { id: generateId(), text: 'Read course introduction', done: true },
+                            { id: generateId(), text: 'Complete first exercise', done: false }
+                        ],
+                        minutes: 25,
+                        difficulty: 2,
+                        reflection: 'Great start! Excited to learn more.',
+                        practice: [
+                            { id: generateId(), title: 'HTML basics', category: 'UI' }
+                        ]
+                    },
+                    {
+                        date: formatDate(yesterday),
+                        day: 2,
+                        plan: [
+                            { id: generateId(), text: 'Learn CSS fundamentals', done: true },
+                            { id: generateId(), text: 'Build first component', done: true },
+                            { id: generateId(), text: 'Practice responsive design', done: true }
+                        ],
+                        minutes: 40,
+                        difficulty: 3,
+                        reflection: 'CSS is tricky but starting to click!',
+                        practice: [
+                            { id: generateId(), title: 'Flexbox layout', category: 'UI' },
+                            { id: generateId(), title: 'CSS Grid basics', category: 'UI' }
+                        ]
+                    }
+                ],
+                milestones: [
+                    { id: generateId(), title: 'Finish v0 dashboard', targetDate: formatDate(new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000)), done: false },
+                    { id: generateId(), title: 'Ship first AI-assisted mini-app', targetDate: formatDate(new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)), done: false },
+                    { id: generateId(), title: 'Publish progress recap post', targetDate: formatDate(new Date(today.getTime() + 21 * 24 * 60 * 60 * 1000)), done: false }
+                ]
+            };
+
+            // Create today's template
+            createTodayTemplate();
+            saveData();
+        }
+
+        function createTodayTemplate() {
+            const today = formatDate(new Date());
+            const existingDay = appData.days.find(day => day.date === today);
+            
+            if (!existingDay) {
+                appData.days.push({
+                    date: today,
+                    day: appData.meta.currentDay,
+                    plan: [
+                        { id: generateId(), text: 'Review yesterday\'s work', done: false },
+                        { id: generateId(), text: 'Complete main learning objective', done: false },
+                        { id: generateId(), text: 'Practice new concepts', done: false }
+                    ],
+                    minutes: 0,
+                    difficulty: 3,
+                    reflection: '',
+                    practice: []
+                });
+            }
+        }
+
+        // Leveling
+        function calculateLevel(totalPoints) {
+            if (totalPoints < 20) return { name: 'Beginner', icon: '🎯', min: 0, max: 19 };
+            if (totalPoints < 50) return { name: 'Novice', icon: '📚', min: 20, max: 49 };
+            if (totalPoints < 100) return { name: 'Intermediate', icon: '⚡', min: 50, max: 99 };
+            if (totalPoints < 170) return { name: 'Advanced', icon: '🚀', min: 100, max: 169 };
+            return { name: 'Pro', icon: '👑', min: 170, max: 999 };
+        }
+
+        function calculateTotalPoints() {
+            return appData.days.reduce((total, day) => {
+                const completedTasks = day.plan.filter(task => task.done).length;
+                const points = (completedTasks * 2) + Math.round(day.minutes / 30) + day.difficulty;
+                return total + points;
+            }, 0);
+        }
+
+        // Rendering
+        function renderStats() {
+            document.getElementById('dayCounter').textContent = `Day ${appData.meta.currentDay} / 30`;
+            document.getElementById('streakCounter').textContent = `🔥 ${appData.meta.streak}`;
+            
+            const today = getCurrentDay();
+            if (today) {
+                const completedTasks = today.plan.filter(task => task.done).length;
+                const totalTasks = today.plan.length;
+                const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                
+                document.getElementById('completionRate').textContent = `${completionRate}%`;
+                document.getElementById('completionProgress').style.width = `${completionRate}%`;
+            }
+        }
+
+        function renderTodaysPlan() {
+            const today = getCurrentDay();
+            const planList = document.getElementById('todaysPlan');
+            planList.innerHTML = '';
+
+            if (today) {
+                today.plan.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = `checklist-item ${task.done ? 'completed' : ''}`;
+                    li.innerHTML = `
+                        <input type="checkbox" ${task.done ? 'checked' : ''} 
+                               onchange="toggleTask('${task.id}')" 
+                               aria-label="Mark task as complete">
+                        <input type="text" class="task-text" value="${task.text}" 
+                               onblur="updateTaskText('${task.id}', this.value)"
+                               onkeydown="handleTaskKeydown(event, '${task.id}')"
+                               aria-label="Task description">
+                        <button class="btn btn-secondary btn-small" 
+                                onclick="removeTask('${task.id}')"
+                                aria-label="Remove task">×</button>
+                    `;
+                    planList.appendChild(li);
+                });
+
+                // Update form values
+                document.getElementById('todaysMinutes').value = today.minutes || 0;
+                document.getElementById('todaysDifficulty').value = today.difficulty || 3;
+                document.getElementById('todaysReflection').value = today.reflection || '';
+            }
+        }
+
+        function renderPracticeLog() {
+            const today = getCurrentDay();
+            const practiceList = document.getElementById('practiceList');
+            practiceList.innerHTML = '';
+
+            if (today && today.practice) {
+                today.practice.forEach(practice => {
+                    const div = document.createElement('div');
+                    div.className = 'practice-item';
+                    div.innerHTML = `
+                        <span>${practice.title}</span>
+                        <span class="practice-category">${practice.category}</span>
+                    `;
+                    practiceList.appendChild(div);
+                });
+            }
+        }
+
+        function renderMilestones() {
+            const milestonesList = document.getElementById('milestonesList');
+            milestonesList.innerHTML = '';
+
+            appData.milestones.forEach(milestone => {
+                const div = document.createElement('div');
+                div.className = `milestone-item ${milestone.done ? 'completed' : ''}`;
+                div.innerHTML = `
+                    <input type="checkbox" ${milestone.done ? 'checked' : ''} 
+                           onchange="toggleMilestone('${milestone.id}')"
+                           aria-label="Mark milestone as complete">
+                    <input type="text" class="milestone-title" value="${milestone.title}" 
+                           onblur="updateMilestoneTitle('${milestone.id}', this.value)"
+                           style="flex: 1; border: none; background: transparent; padding: 0.25rem;">
+                    <input type="date" value="${milestone.targetDate}" 
+                           onchange="updateMilestoneDate('${milestone.id}', this.value)"
+                           style="width: auto;">
+                `;
+                milestonesList.appendChild(div);
+            });
+        }
+
+        function renderLevel() {
+            const totalPoints = calculateTotalPoints();
+            const level = calculateLevel(totalPoints);
+            
+            document.getElementById('levelBadge').innerHTML = `${level.icon} ${level.name}`;
+            document.getElementById('levelPoints').textContent = `${totalPoints} points`;
+            
+            const progressInLevel = totalPoints - level.min;
+            const levelRange = level.max - level.min + 1;
+            const progressPercent = Math.min((progressInLevel / levelRange) * 100, 100);
+            
+            document.getElementById('levelProgress').style.width = `${progressPercent}%`;
+            
+            const pointsToNext = level.max + 1 - totalPoints;
+            if (level.name === 'Pro') {
+                document.getElementById('levelProgressText').textContent = 'Max level reached!';
+            } else {
+                document.getElementById('levelProgressText').textContent = `${pointsToNext} points to next level`;
+            }
+        }
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+
+            const recentDays = appData.days
+                .filter(day => day.date !== formatDate(new Date()))
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 7);
+
+            recentDays.forEach(day => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => toggleHistoryItem(div);
+                
+                const completedTasks = day.plan.filter(task => task.done).length;
+                const totalTasks = day.plan.length;
+                
+                div.innerHTML = `
+                    <div class="history-header">
+                        <span>Day ${day.day} - ${formatDateDisplay(day.date)}</span>
+                        <span>${completedTasks}/${totalTasks} tasks • ${day.minutes}min</span>
+                    </div>
+                    <div class="history-details">
+                        <h4>Tasks:</h4>
+                        <ul>
+                            ${day.plan.map(task => `<li style="text-decoration: ${task.done ? 'line-through' : 'none'}">${task.text}</li>`).join('')}
+                        </ul>
+                        ${day.reflection ? `<h4>Reflection:</h4><p>${day.reflection}</p>` : ''}
+                        ${day.practice.length > 0 ? `<h4>Practice:</h4><p>${day.practice.map(p => `${p.title} (${p.category})`).join(', ')}</p>` : ''}
+                    </div>
+                `;
+                historyList.appendChild(div);
+            });
+        }
+
+        function renderCharts() {
+            renderMinutesChart();
+            renderTasksChart();
+        }
+
+        function renderMinutesChart() {
+            const canvas = document.getElementById('minutesChart');
+            const ctx = canvas.getContext('2d');
+            const last7Days = getLast7DaysData();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (last7Days.length === 0) return;
+            
+            const maxMinutes = Math.max(...last7Days.map(d => d.minutes), 1);
+            const padding = 20;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            last7Days.forEach((day, index) => {
+                const x = padding + (index / (last7Days.length - 1)) * chartWidth;
+                const y = padding + chartHeight - (day.minutes / maxMinutes) * chartHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+        }
+
+        function renderTasksChart() {
+            const canvas = document.getElementById('tasksChart');
+            const ctx = canvas.getContext('2d');
+            const last7Days = getLast7DaysData();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (last7Days.length === 0) return;
+            
+            const maxTasks = Math.max(...last7Days.map(d => d.completedTasks), 1);
+            const padding = 20;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            const barWidth = chartWidth / last7Days.length * 0.8;
+            
+            ctx.fillStyle = '#3b82f6';
+            
+            last7Days.forEach((day, index) => {
+                const x = padding + (index / last7Days.length) * chartWidth + barWidth * 0.1;
+                const barHeight = (day.completedTasks / maxTasks) * chartHeight;
+                const y = padding + chartHeight - barHeight;
+                
+                ctx.fillRect(x, y, barWidth, barHeight);
+            });
+        }
+
+        // Events
+        function addTask() {
+            const today = getCurrentDay();
+            if (today) {
+                const newTask = {
+                    id: generateId(),
+                    text: 'New task',
+                    done: false
+                };
+                today.plan.push(newTask);
+                saveData();
+                renderTodaysPlan();
+                renderStats();
+            }
+        }
+
+        function removeTask(taskId) {
+            const today = getCurrentDay();
+            if (today) {
+                today.plan = today.plan.filter(task => task.id !== taskId);
+                saveData();
+                renderTodaysPlan();
+                renderStats();
+            }
+        }
+
+        function toggleTask(taskId) {
+            const today = getCurrentDay();
+            if (today) {
+                const task = today.plan.find(t => t.id === taskId);
+                if (task) {
+                    task.done = !task.done;
+                    saveData();
+                    renderTodaysPlan();
+                    renderStats();
+                    renderLevel();
+                }
+            }
+        }
+
+        function updateTaskText(taskId, newText) {
+            const today = getCurrentDay();
+            if (today) {
+                const task = today.plan.find(t => t.id === taskId);
+                if (task) {
+                    task.text = newText;
+                    saveData();
+                }
+            }
+        }
+
+        function handleTaskKeydown(event, taskId) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addTask();
+            } else if (event.key === ' ' && event.ctrlKey) {
+                event.preventDefault();
+                toggleTask(taskId);
+            }
+        }
+
+        function saveToday() {
+            const today = getCurrentDay();
+            if (today) {
+                today.minutes = parseInt(document.getElementById('todaysMinutes').value) || 0;
+                today.difficulty = parseInt(document.getElementById('todaysDifficulty').value) || 3;
+                today.reflection = document.getElementById('todaysReflection').value;
+                saveData();
+                renderLevel();
+                renderCharts();
+                showToast('Progress saved!', 'success');
+            }
+        }
+
+        function completeDay() {
+            const today = getCurrentDay();
+            if (!today) return;
+            
+            const completedTasks = today.plan.filter(task => task.done).length;
+            const hasMinutes = today.minutes > 0;
+            
+            if (completedTasks === 0 && !hasMinutes) {
+                showToast('Complete at least one task or log some study time before completing the day.');
+                return;
+            }
+            
+            const todayDate = formatDate(new Date());
+            if (appData.meta.lastCompletedDate === todayDate) {
+                showToast('You have already completed today!');
+                return;
+            }
+            
+            showModal(
+                'Complete Day?',
+                `Mark Day ${appData.meta.currentDay} as complete? This will advance to the next day.`,
+                () => {
+                    // Save current progress
+                    saveToday();
+                    
+                    // Update meta
+                    appData.meta.lastCompletedDate = todayDate;
+                    updateStreak();
+                    
+                    if (appData.meta.currentDay < 30) {
+                        appData.meta.currentDay++;
+                        createTodayTemplate();
+                    }
+                    
+                    saveData();
+                    renderAll();
+                    showToast('Day completed! Great work! 🎉', 'success');
+                }
+            );
+        }
+
+        function addPractice() {
+            const title = document.getElementById('practiceTitle').value.trim();
+            const category = document.getElementById('practiceCategory').value;
+            
+            if (!title) return;
+            
+            const today = getCurrentDay();
+            if (today) {
+                today.practice.push({
+                    id: generateId(),
+                    title: title,
+                    category: category
+                });
+                
+                document.getElementById('practiceTitle').value = '';
+                saveData();
+                renderPracticeLog();
+            }
+        }
+
+        function toggleMilestone(milestoneId) {
+            const milestone = appData.milestones.find(m => m.id === milestoneId);
+            if (milestone) {
+                milestone.done = !milestone.done;
+                saveData();
+                renderMilestones();
+            }
+        }
+
+        function updateMilestoneTitle(milestoneId, newTitle) {
+            const milestone = appData.milestones.find(m => m.id === milestoneId);
+            if (milestone) {
+                milestone.title = newTitle;
+                saveData();
+            }
+        }
+
+        function updateMilestoneDate(milestoneId, newDate) {
+            const milestone = appData.milestones.find(m => m.id === milestoneId);
+            if (milestone) {
+                milestone.targetDate = newDate;
+                saveData();
+            }
+        }
+
+        function toggleHistory() {
+            historyVisible = !historyVisible;
+            const historyList = document.getElementById('historyList');
+            const toggleText = document.getElementById('historyToggleText');
+            
+            if (historyVisible) {
+                historyList.classList.remove('hidden');
+                toggleText.textContent = 'Hide History';
+                renderHistory();
+            } else {
+                historyList.classList.add('hidden');
+                toggleText.textContent = 'Show History (last 7 entries)';
+            }
+        }
+
+        function toggleHistoryItem(element) {
+            element.classList.toggle('expanded');
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'vibecoding-progress.json';
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            showToast('Data exported successfully!', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Basic validation
+                    if (!importedData.meta || !importedData.days || !importedData.milestones) {
+                        throw new Error('Invalid data format');
+                    }
+                    
+                    showModal(
+                        'Import Data',
+                        'This will replace all current data. Are you sure?',
+                        () => {
+                            appData = importedData;
+                            saveData();
+                            renderAll();
+                            showToast('Data imported successfully!', 'success');
+                        }
+                    );
+                } catch (error) {
+                    showToast('Failed to import data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
+        // Accessibility helpers
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.querySelector('.modal-overlay');
+                if (modal) {
+                    modal.remove();
+                }
+            }
+        });
+
+        // Utilities
+        function getCurrentDay() {
+            const today = formatDate(new Date());
+            return appData.days.find(day => day.date === today);
+        }
+
+        function updateStreak() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            const lastCompleted = appData.meta.lastCompletedDate;
+            const yesterdayStr = formatDate(yesterday);
+            const todayStr = formatDate(today);
+            
+            if (lastCompleted === yesterdayStr) {
+                appData.meta.streak++;
+            } else if (lastCompleted === todayStr) {
+                // Same day, don't change streak
+            } else {
+                appData.meta.streak = 1; // Reset streak
+            }
+        }
+
+        function getLast7DaysData() {
+            const today = new Date();
+            const last7Days = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = formatDate(date);
+                
+                const dayData = appData.days.find(day => day.date === dateStr);
+                if (dayData) {
+                    const completedTasks = dayData.plan.filter(task => task.done).length;
+                    last7Days.push({
+                        date: dateStr,
+                        minutes: dayData.minutes || 0,
+                        completedTasks: completedTasks
+                    });
+                } else {
+                    last7Days.push({
+                        date: dateStr,
+                        minutes: 0,
+                        completedTasks: 0
+                    });
+                }
+            }
+            
+            return last7Days;
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDateDisplay(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function showModal(title, message, onConfirm) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.innerHTML = `
+                <div class="modal">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <div class="modal-buttons">
+                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove(); (${onConfirm})()">Confirm</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function showToast(message, type = 'error') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'success' ? 'toast-success' : ''}`;
+            toast.textContent = message;
+            toast.style.backgroundColor = type === 'success' ? '#059669' : '#dc2626';
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function renderAll() {
+            renderStats();
+            renderTodaysPlan();
+            renderPracticeLog();
+            renderMilestones();
+            renderLevel();
+            renderCharts();
+            if (historyVisible) {
+                renderHistory();
+            }
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            renderAll();
+            
+            // Auto-save on input changes
+            document.getElementById('todaysMinutes').addEventListener('input', saveToday);
+            document.getElementById('todaysDifficulty').addEventListener('change', saveToday);
+            document.getElementById('todaysReflection').addEventListener('input', saveToday);
+            
+            // Enter key for practice input
+            document.getElementById('practiceTitle').addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    addPractice();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

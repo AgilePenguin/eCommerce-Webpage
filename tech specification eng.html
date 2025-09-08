@@ -1,0 +1,62 @@
+# VibeCoding E‑commerce Webpage — Technical Specification
+
+## Overview
+This document specifies the design and implementation details of the **VibeCoding Shop** e‑commerce landing page. The goal is to provide beginners with a minimal yet functional template that demonstrates responsive layout, interactive product cards, theming, and offline‑friendly asset handling.
+
+## Goals
+- Deliver a single **HTML file** containing structure, styling, and behavior.
+- Provide a responsive **Trending Products** grid with 4 product cards.
+- Include **randomized product images** (offline SVG illustrations of tech devices).
+- Implement **option selectors** per product (dropdown, segmented buttons, color swatches).
+- Support **light/dark mode toggle** with localStorage persistence.
+- Provide a **promotional banner** with CTA button.
+- Ensure modern, clean, mobile‑friendly design with no external dependencies.
+
+## Acceptance Criteria
+1. **Layout & Responsiveness**
+   - Desktop: 4‑column grid for product cards.
+   - Tablet: 2‑column grid.
+   - Mobile: 1‑column grid.
+   - Sticky header with brand and theme toggle.
+   - Footer with copyright and meta info.
+
+2. **Product Card Components**
+   - Product image area (random SVG illustration).
+   - Title, price range, rating (stars).
+   - Option selection area:
+     - *Select* dropdown (e.g., specifications).
+     - *Segmented buttons* (e.g., memory sizes).
+     - *Color swatches* (e.g., product color).
+   - CTA: “Add To Cart” button.
+
+3. **Promotional Banner**
+   - Gradient background with embedded SVG text.
+   - Positioned below product grid.
+   - Includes call‑to‑action button (e.g., “Browse Tech Products”).
+
+4. **Styling**
+   - Defined with CSS variables for colors, shadows, radii.
+   - Dark/light mode themes.
+   - Rounded corners, soft shadows, system font.
+   - Consistent spacing and typography.
+
+5. **Behavior**
+   - Random product image selected from embedded SVGs at runtime.
+   - Interactive controls (buttons/swatch selection states).
+   - Theme toggle persists user preference in localStorage.
+   - Current year dynamically injected into footer.
+
+## Technical Details
+- **Language**: HTML5 with embedded CSS and JavaScript.
+- **Dependencies**: None (no CDN, no external libraries).
+- **Images**: Embedded inline SVG (data URI) to work offline.
+- **Accessibility**: Semantic HTML elements, ARIA labels where appropriate.
+- **Browser Support**: Modern evergreen browsers.
+
+## File Information
+- **File name**: `index.html`
+- **Alternative documentation**: This file (`document.md`) acts as the tech spec.
+
+---
+
+**End of Specification**
